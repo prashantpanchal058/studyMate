@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon backend/src/index.ts",
-    "start": "node frontend/dist/index.js",
+    "start": "node frontend/dist/index.html",
     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "author": "",
