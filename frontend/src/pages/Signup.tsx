@@ -35,7 +35,7 @@ const Signup: React.FC = () => {
     const { name, email, password } = form;
 
     try {
-      const response = await fetch("http://localhost:8007/signup", {
+      const response = await fetch("https://studymate-p7sk.onrender.com/signup", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

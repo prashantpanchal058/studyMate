@@ -7,7 +7,7 @@ interface GroupStatusProviderProps {
 }
 
 const StateGroupStatus: React.FC<GroupStatusProviderProps> = ({ children }) => {
-    const host = "http://localhost:8007/status";
+    const host = "https://studymate-p7sk.onrender.com/status";
 
     const [groupStatus, setGroupstatus] = useState<GroupStatus[]>([]);
 
