@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon backend/src/index.ts",
-    "start": "nodemon backend/src/index.ts",
+    "dev": "npm backend/src/index.ts",
+    "start": "npm backend/src/index.ts",
     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "author": "",
