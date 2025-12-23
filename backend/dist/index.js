@@ -33,7 +33,7 @@ const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server, {
     pingTimeout: 60000,
     cors: {
-        origin: [process.env.FRONTEND_URL || "http://localhost:5173"],
+        origin: [process.env.FRONTEND_URL || "https://studymate-p7sk.onrender.com"],
         methods: ["GET", "POST"],
         credentials: true,
     },
