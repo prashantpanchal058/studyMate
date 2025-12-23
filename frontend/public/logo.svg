@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="128" height="128" role="img"
+    aria-labelledby="sgfTitle sgfDesc">
+    <title id="sgfTitle">Study Group Finder icon</title>
+    <desc id="sgfDesc">A stylized open book forming a chat bubble with three student avatars above it</desc>
+
+    <!-- CSS variables for easy recoloring -->
+    <style>
+        .bg {
+            fill: var(--sgf-bg, #ffffff);
+        }
+
+        .bubble {
+            fill: var(--sgf-primary, #2563eb);
+        }
+
+        /* primary: chat/book */
+        .accent {
+            fill: var(--sgf-accent, #06b6d4);
+        }
+
+        /* accent: inner shapes */
+        .people {
+            fill: var(--sgf-people, #ffffff);
+        }
+
+        /* avatar color (contrasts primary) */
+        .shadow {
+            fill: rgba(0, 0, 0, 0.06);
+        }
+    </style>
+
+    <!-- subtle drop shadow -->
+    <ellipse class="shadow" cx="32" cy="58" rx="18" ry="3" />
+
+    <!-- chat bubble / open book base -->
+    <path class="bubble"
+        d="M8 20c0-3.3 2.7-6 6-6h36c3.3 0 6 2.7 6 6v18c0 3.3-2.7 6-6 6H28l-8 6v-6H14c-3.3 0-6-2.7-6-6V20z" />
+
+    <!-- book crease / inner lines -->
+    <path class="accent" d="M32 14v36l8-6h16V20c0-2.2-1.8-4-4-4H32z" opacity="0.95" />
+
+    <!-- three avatar heads (group) -->
+    <circle class="people" cx="22" cy="22" r="4" />
+    <circle class="people" cx="32" cy="19" r="4" />
+    <circle class="people" cx="42" cy="22" r="4" />
+
+    <!-- small bodies / shoulders under heads -->
+    <path class="people" d="M18 27c-1.7 0-3 1.3-3 3v1h10v-1c0-1.7-1.3-3-3-3h-4z" />
+    <path class="people" d="M28 24c-1.7 0-3 1.3-3 3v1h10v-1c0-1.7-1.3-3-3-3h-4z" />
+    <path class="people" d="M38 27c-1.7 0-3 1.3-3 3v1h10v-1c0-1.7-1.3-3-3-3h-4z" />
+
+    <!-- book lines for detail -->
+    <g opacity="0.08" fill="#000">
+        <rect x="14" y="34" width="8" height="1.6" rx="0.8" />
+        <rect x="30" y="34" width="14" height="1.6" rx="0.8" />
+        <rect x="14" y="37" width="30" height="1.6" rx="0.8" />
+    </g>
+</svg>
