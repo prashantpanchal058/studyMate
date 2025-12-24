@@ -1,97 +1,100 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
+import dotenv from "dotenv";
+import path from "path";
 
+import connectToMongo from "./database";
 import router from "./routes/auth";
 import router_group from "./routes/group";
 import router_status from "./routes/groupstatus";
 
-import connectToMongo from "./database";
-
-import dotenv from "dotenv";
-import path from "path";
-
-dotenv.config()
+dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 8007;
+const PORT = process.env.PORT || 8007;
 
-const _dirname = path.resolve();
-
-app.use(cors());
+// ------------------- MIDDLEWARE -------------------
+app.use(
+    cors({
+        origin: process.env.FRONTEND_URL, // IMPORTANT
+        credentials: true,
+    })
+);
 app.use(express.json());
 
+// ------------------- ROUTES -------------------
 app.use("/", router);
 app.use("/group", router_group);
 app.use("/status", router_status);
 
-app.use(express.static(path.join(_dirname, "/frontend/dist")))
-app.get(/^(?!\/api).*/, (req: Request, res: Response) => {
-    res.sendFile(path.join(_dirname, "frontend", "dist", "index.html"));
+// ------------------- STATIC FRONTEND -------------------
+const __dirnameResolved = path.resolve();
+app.use(express.static(path.join(__dirnameResolved, "frontend", "dist")));
+
+app.get("*", (_, res) => {
+    res.sendFile(
+        path.join(__dirnameResolved, "frontend", "dist", "index.html")
+    );
 });
 
-
-// Create HTTP server manually (important for TS + Socket.io)
+// ------------------- HTTP + SOCKET -------------------
 const server = http.createServer(app);
 
-// Initialize Socket.io in TS way
 const io = new Server(server, {
     cors: {
-        origin: "https://studymate-p7sk.onrender.com",
+        origin: process.env.FRONTEND_URL,
         methods: ["GET", "POST"],
         credentials: true,
     },
+    transports: ["websocket"], // IMPORTANT for Render
 });
-
-
 
 io.on("connection", (socket) => {
+    console.log("Socket connected:", socket.id);
 
-    socket.on("room:join", (data) => {
-        const { userId, friendId } = data;
-
+    socket.on("room:join", ({ userId, friendId }) => {
         const roomId = [userId, friendId].sort().join("_");
-
         socket.join(roomId);
 
-        // Notify other users in room that someone joined
         socket.to(roomId).emit("user:joined", {
             id: socket.id,
-            roomId
+            roomId,
         });
 
-        socket.emit("room:join", { id: socket.id });
+        socket.emit("room:joined", { id: socket.id, roomId });
     });
 
+    socket.on("user:call", ({ to, offer }) => {
+        io.to(to).emit("incoming:call", { from: socket.id, offer });
+    });
 
-    socket.on('user:call', ({ to, offer }) => {
-        io.to(to).emit("incomming:call", { from: socket.id, offer });
-    })
-
-    socket.on('call:accepted', ({ to, ans }) => {
+    socket.on("call:accepted", ({ to, ans }) => {
         io.to(to).emit("call:accepted", { from: socket.id, ans });
-    })
+    });
 
-    socket.on('peer:nego:needed', ({ to, offer }) => {
+    socket.on("peer:nego:needed", ({ to, offer }) => {
         io.to(to).emit("peer:nego:needed", { from: socket.id, offer });
-    })
+    });
 
-    socket.on('peer:nego:done', ({ to, ans }) => {
+    socket.on("peer:nego:done", ({ to, ans }) => {
         io.to(to).emit("peer:nego:final", { from: socket.id, ans });
-    })
+    });
+
+    socket.on("disconnect", () => {
+        console.log("Socket disconnected:", socket.id);
+    });
 });
 
-// Start serverc
-const startServer = async () => {
+// ------------------- START SERVER -------------------
+(async () => {
     try {
         await connectToMongo();
-        server.listen(port, () => {
-            console.log(`Server running on port ${port}`);
+        server.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
         });
     } catch (err) {
-        console.error("Mongo connection failed:", err);
+        console.error("Startup error:", err);
     }
-};
-
-startServer();
+})();
