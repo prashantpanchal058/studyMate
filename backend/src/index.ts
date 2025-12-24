@@ -33,7 +33,7 @@ app.use("/status", router_status);
 const __dirnameResolved = path.resolve();
 app.use(express.static(path.join(__dirnameResolved, "frontend", "dist")));
 
-app.get("*", (_, res) => {
+app.get(/^(?!\/api).*/ , (_, res) => {
     res.sendFile(
         path.join(__dirnameResolved, "frontend", "dist", "index.html")
     );
