@@ -144,7 +144,12 @@ const FindGroup: React.FC = () => {
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredGroups.map((group) => (
+                    {(filteredGroups.length === 0) ? (
+                        <p className="text-gray-600 text-center col-span-3">
+                            No groups found with current filters.
+                        </p>
+                    ) :
+                    ( filteredGroups.map((group) => (
                         <div
                             key={group._id}
                             className="p-6 bg-white rounded-xl shadow hover:shadow-lg transition flex flex-col justify-between"
@@ -173,13 +178,7 @@ const FindGroup: React.FC = () => {
                             </button>
 
                         </div>
-                    ))}
-
-                    {filteredGroups.length === 0 && (
-                        <p className="text-gray-600 text-center col-span-3">
-                            No groups found with current filters.
-                        </p>
-                    )}
+                    )))}
                 </div>
 
             </div>
