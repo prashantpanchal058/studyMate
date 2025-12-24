@@ -8,7 +8,7 @@ export const useSocket = () => useContext(SocketContext);
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const socket = useMemo(
         () =>
-            io(import.meta.env.VITE_BACKEND_URL, {
+            io("https://studymate-p7sk.onrender.com", {
                 transports: ["websocket"],
             }),
         []
