@@ -14,8 +14,6 @@ import path from "path";
 
 dotenv.config()
 
-connectToMongo();
-
 const app = express();
 const port = process.env.PORT || 8007;
 
@@ -39,13 +37,14 @@ const server = http.createServer(app);
 
 // Initialize Socket.io in TS way
 const io = new Server(server, {
-    pingTimeout: 60000,
     cors: {
-        origin: [process.env.FRONTEND_URL || "https://studymate-p7sk.onrender.com"],
+        origin: "https://studymate-p7sk.onrender.com",
         methods: ["GET", "POST"],
         credentials: true,
     },
 });
+
+
 
 io.on("connection", (socket) => {
 
