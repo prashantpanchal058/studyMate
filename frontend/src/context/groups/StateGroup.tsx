@@ -7,7 +7,7 @@ interface GroupProviderProps {
 }
 
 const StateGroup: React.FC<GroupProviderProps> = ({ children }) => {
-    const host = import.meta.env.VITE_GROUP_HOST || "https://studymate-p7sk.onrender.com/group";
+    const host = "https://studymate-p7sk.onrender.com/group";
     const [groups, setGroups] = useState<Group[]>([]);
 
     // Create a group
