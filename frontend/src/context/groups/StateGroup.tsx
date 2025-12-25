@@ -85,7 +85,7 @@ const StateGroup: React.FC<GroupProviderProps> = ({ children }) => {
         const result = await response.json();
 
         if (response.ok) {
-            setGroups(Array.isArray(result.groups) ? result.groups : []);
+            setGroups(result.groups);
         }
 
         return result;

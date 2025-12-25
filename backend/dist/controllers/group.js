@@ -100,8 +100,8 @@ const getAllGroup = async (req, res) => {
             query = { userId: { $ne: userId } };
         }
         const groups = await Group_1.default.find(query).sort({ createdAt: -1 });
-        if (!groups || groups.length === 0) {
-            return res.status(404).json("Groups are not available");
+        if (!groups) {
+            return res.send(404).json("error");
         }
         return res.json(groups);
     }
