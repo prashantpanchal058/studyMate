@@ -124,9 +124,13 @@ export const getAllGroup = async (req: AuthRequest, res: Response): Promise<Resp
 
         const groups = await Group.find(query).sort({ createdAt: -1 });
 
-        if (!groups || groups.length === 0) {
+        if(!groups){
+            return res.send(404).json("error")
+        }
+
+        if(groups.length === 0) {
             console.log("not available")
-            return res.status(404).json("Groups are not available");
+            return res.json([]);
         }
         return res.json(groups);
 
