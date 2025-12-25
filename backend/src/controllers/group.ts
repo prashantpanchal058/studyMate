@@ -129,7 +129,6 @@ export const getAllGroup = async (req: AuthRequest, res: Response): Promise<Resp
         }
 
         if(groups.length === 0) {
-            console.log("not available")
             return res.json([]);
         }
         return res.json(groups);
