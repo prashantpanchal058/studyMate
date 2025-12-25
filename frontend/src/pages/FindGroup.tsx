@@ -144,41 +144,45 @@ const FindGroup: React.FC = () => {
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {(filteredGroups.length === 0) ? (
-                        <p className="text-gray-600 text-center col-span-3">
-                            No groups found with current filters.
-                        </p>
-                    ) :
-                    ( filteredGroups.map((group) => (
-                        <div
-                            key={group._id}
-                            className="p-6 bg-white rounded-xl shadow hover:shadow-lg transition flex flex-col justify-between"
-                        >
-                            <h2 className="text-xl font-semibold mb-2">
-                                {group.topic} — {group.subtopic}
-                            </h2>
+                    {
+                        (filteredGroups.length === 0) ? (
+                            <p className="text-gray-600 text-center col-span-3">
+                                No groups found with current filters.
+                            </p>
+                        ): (
+                            <p>{filteredGroups}</p>
+                        )
+                            // (filteredGroups.map((group) => (
+                            //     <div
+                            //         key={group._id}
+                            //         className="p-6 bg-white rounded-xl shadow hover:shadow-lg transition flex flex-col justify-between"
+                            //     >
+                            //         <h2 className="text-xl font-semibold mb-2">
+                            //             {group.topic} — {group.subtopic}
+                            //         </h2>
 
-                            <div className="flex items-start gap-2 text-gray-600 mb-3">
-                                <MessageSquare className="w-5 h-5 text-gray-500" />
-                                <p className="text-sm">{group.desc}</p>
-                            </div>
+                            //         <div className="flex items-start gap-2 text-gray-600 mb-3">
+                            //             <MessageSquare className="w-5 h-5 text-gray-500" />
+                            //             <p className="text-sm">{group.desc}</p>
+                            //         </div>
 
-                            <div className="flex items-center gap-2 text-gray-600 mb-4">
-                                <Clock className="w-5 h-5" />
-                                <span>
-                                    Time: {getTimeSlot(group.time)} ({group.time}) — {group.days} days
-                                </span>
-                            </div>
+                            //         <div className="flex items-center gap-2 text-gray-600 mb-4">
+                            //             <Clock className="w-5 h-5" />
+                            //             <span>
+                            //                 Time: {getTimeSlot(group.time)} ({group.time}) — {group.days} days
+                            //             </span>
+                            //         </div>
 
-                            <button
-                                className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700"
-                                onClick={() => sendRequestGroup(group._id)}
-                            >
-                                {requestedGroups.includes(group._id) ? "Requested" : "Join Group"}
-                            </button>
+                            //         <button
+                            //             className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700"
+                            //             onClick={() => sendRequestGroup(group._id)}
+                            //         >
+                            //             {requestedGroups.includes(group._id) ? "Requested" : "Join Group"}
+                            //         </button>
 
-                        </div>
-                    )))}
+                            //     </div>
+                            // )))
+                    }
                 </div>
 
             </div>
