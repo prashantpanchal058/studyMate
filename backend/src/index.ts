@@ -15,31 +15,31 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8007;
 
-// ------------------- MIDDLEWARE -------------------
+/* ------------------- MIDDLEWARE ------------------- */
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL, // IMPORTANT
+        origin: process.env.FRONTEND_URL,
         credentials: true,
     })
 );
 app.use(express.json());
 
-// ------------------- ROUTES -------------------
+/* ------------------- ROUTES ------------------- */
 app.use("/", router);
 app.use("/group", router_group);
 app.use("/status", router_status);
 
-// ------------------- STATIC FRONTEND -------------------
+/* ------------------- STATIC FRONTEND ------------------- */
 const __dirnameResolved = path.resolve();
 app.use(express.static(path.join(__dirnameResolved, "frontend", "dist")));
 
-app.get("*" , (_, res) => {
+app.get(/^\/(?!socket\.io).*/, (_, res) => {
     res.sendFile(
         path.join(__dirnameResolved, "frontend", "dist", "index.html")
     );
 });
 
-// ------------------- HTTP + SOCKET -------------------
+/* ------------------- HTTP + SOCKET ------------------- */
 const server = http.createServer(app);
 
 const io = new Server(server, {
@@ -48,7 +48,7 @@ const io = new Server(server, {
         methods: ["GET", "POST"],
         credentials: true,
     },
-    transports: ["websocket"], // IMPORTANT for Render
+    transports: ["polling", "websocket"], // ✅ DO NOT force websocket only
 });
 
 io.on("connection", (socket) => {
@@ -56,6 +56,7 @@ io.on("connection", (socket) => {
 
     socket.on("room:join", ({ userId, friendId }) => {
         const roomId = [userId, friendId].sort().join("_");
+
         socket.join(roomId);
 
         socket.to(roomId).emit("user:joined", {
@@ -63,23 +64,38 @@ io.on("connection", (socket) => {
             roomId,
         });
 
-        socket.emit("room:joined", { id: socket.id, roomId });
+        socket.emit("room:joined", {
+            id: socket.id,
+            roomId,
+        });
     });
 
     socket.on("user:call", ({ to, offer }) => {
-        io.to(to).emit("incoming:call", { from: socket.id, offer });
+        io.to(to).emit("incoming:call", {
+            from: socket.id,
+            offer,
+        });
     });
 
     socket.on("call:accepted", ({ to, ans }) => {
-        io.to(to).emit("call:accepted", { from: socket.id, ans });
+        io.to(to).emit("call:accepted", {
+            from: socket.id,
+            ans,
+        });
     });
 
     socket.on("peer:nego:needed", ({ to, offer }) => {
-        io.to(to).emit("peer:nego:needed", { from: socket.id, offer });
+        io.to(to).emit("peer:nego:needed", {
+            from: socket.id,
+            offer,
+        });
     });
 
     socket.on("peer:nego:done", ({ to, ans }) => {
-        io.to(to).emit("peer:nego:final", { from: socket.id, ans });
+        io.to(to).emit("peer:nego:final", {
+            from: socket.id,
+            ans,
+        });
     });
 
     socket.on("disconnect", () => {
@@ -87,7 +103,7 @@ io.on("connection", (socket) => {
     });
 });
 
-// ------------------- START SERVER -------------------
+/* ------------------- START SERVER ------------------- */
 (async () => {
     try {
         await connectToMongo();
