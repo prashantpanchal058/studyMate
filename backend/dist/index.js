@@ -29,7 +29,7 @@ app.use("/status", groupstatus_1.default);
 // ------------------- STATIC FRONTEND -------------------
 const __dirnameResolved = path_1.default.resolve();
 app.use(express_1.default.static(path_1.default.join(__dirnameResolved, "frontend", "dist")));
-app.get(/^(?!\/api).*/, (_, res) => {
+app.get("*", (_, res) => {
     res.sendFile(path_1.default.join(__dirnameResolved, "frontend", "dist", "index.html"));
 });
 // ------------------- HTTP + SOCKET -------------------
