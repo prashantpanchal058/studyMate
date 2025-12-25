@@ -127,10 +127,6 @@ export const getAllGroup = async (req: AuthRequest, res: Response): Promise<Resp
         if(!groups){
             return res.send(404).json("error")
         }
-
-        if(groups.length === 0) {
-            return res.json([]);
-        }
         return res.json(groups);
 
     } catch (error) {
