@@ -40,7 +40,7 @@ const io = new socket_io_1.Server(server, {
         methods: ["GET", "POST"],
         credentials: true,
     },
-    transports: ["websocket"], // IMPORTANT for Render
+    transports: ["polling", "websocket"], // IMPORTANT for Render
 });
 io.on("connection", (socket) => {
     console.log("Socket connected:", socket.id);

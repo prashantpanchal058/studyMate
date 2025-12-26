@@ -22,7 +22,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
         () =>
             io("https://studymate-p7sk.onrender.com", {
                 withCredentials: true,
-                transports: ["websocket"], // ✅ Render-safe
+                transports: ["polling","websocket"], // ✅ Render-safe
             }),
         []
     );

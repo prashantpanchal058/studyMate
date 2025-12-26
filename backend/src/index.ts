@@ -48,7 +48,7 @@ const io = new Server(server, {
         methods: ["GET", "POST"],
         credentials: true,
     },
-    transports: ["websocket"], // IMPORTANT for Render
+    transports: ["polling","websocket"], // IMPORTANT for Render
 });
 
 io.on("connection", (socket) => {
