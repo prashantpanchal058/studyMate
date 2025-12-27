@@ -20,10 +20,13 @@ const MyGroups: React.FC = () => {
 
     const acceptRequest = async (id: string) => {
         if (!groupstatusCtx) return;
+
         try {
+            setPendingGroups(prev => prev.filter(group => group.id !== id));
+
             await groupstatusCtx.updateGroupStatus(id);
-            loadPendingGroups();
             loadCompletedGroups();
+
         } catch (error) {
             console.error("Failed to accept request", error);
         }

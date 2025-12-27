@@ -23,6 +23,11 @@ const ConversationGUI: React.FC = () => {
     const socket = useSocket();
     // const peerConnection = peer.getPeer();
     const [myStream, setMyStream] = useState<MediaStream>();
+    const [isMuted, setIsMuted] = useState(false);
+    const [isCameraOff, setIsCameraOff] = useState(false);
+    const [isScreenSharing, setIsScreenSharing] = useState(false);
+
+
 
     const handleUserJoined = useCallback((data: PassData) => {
         setRemoteSocketId(data.id);
@@ -172,6 +177,27 @@ const ConversationGUI: React.FC = () => {
         socket?.emit("peer:nego:needed", { to: remoteSocketId, offer });
     };
 
+    const toggleMute = useCallback(() => {
+        if (!myStream) return;
+
+        myStream.getAudioTracks().forEach(track => {
+            track.enabled = !track.enabled;
+        });
+
+        setIsMuted(prev => !prev);
+    }, [myStream]);
+
+    const toggleCamera = useCallback(() => {
+        if (!myStream) return;
+
+        myStream.getVideoTracks().forEach(track => {
+            track.enabled = !track.enabled;
+        });
+
+        setIsCameraOff(prev => !prev);
+    }, [myStream]);
+
+
     const handleLeaveCall = useCallback(() => {
         // 1. Stop local media
         myStream?.getTracks().forEach(track => track.stop());
@@ -195,6 +221,73 @@ const ConversationGUI: React.FC = () => {
         // 6. Notify other user (optional but correct)
         socket?.emit("call:leave", { to: remoteSocketId });
     }, [myStream, remoteSocketId, socket]);
+
+    const toggleScreenShare = useCallback(async () => {
+        if (!myStream) return;
+
+        // 🔴 STOP screen share → back to camera
+        if (isScreenSharing) {
+            const camStream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true
+            });
+
+            const camTrack = camStream.getVideoTracks()[0];
+
+            const sender = peer.peer.getSenders().find(
+                s => s.track?.kind === "video"
+            );
+
+            if (sender) {
+                await sender.replaceTrack(camTrack);
+            }
+
+            setMyStream(camStream);
+            setIsScreenSharing(false);
+            return;
+        }
+
+        // 🟢 START screen share
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+            audio: false
+        });
+
+        const screenTrack = screenStream.getVideoTracks()[0];
+
+        const sender = peer.peer.getSenders().find(
+            s => s.track?.kind === "video"
+        );
+
+        if (sender) {
+            await sender.replaceTrack(screenTrack);
+        }
+
+        // 🔥 auto switch back when user clicks "Stop sharing" in browser
+        screenTrack.onended = async () => {
+            const camStream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true
+            });
+
+            const camTrack = camStream.getVideoTracks()[0];
+
+            const sender = peer.peer.getSenders().find(
+                s => s.track?.kind === "video"
+            );
+
+            if (sender) {
+                await sender.replaceTrack(camTrack);
+            }
+
+            setMyStream(camStream);
+            setIsScreenSharing(false);
+        };
+
+        setMyStream(screenStream);
+        setIsScreenSharing(true);
+    }, [myStream, isScreenSharing]);
+
 
 
     return (
@@ -263,11 +356,32 @@ const ConversationGUI: React.FC = () => {
                 </div>
 
                 <div className="flex gap-3 justify-center py-2">
-                    <button className="px-4 py-2 border rounded bg-white/10 text-white">Mute</button>
-                    <button className="px-4 py-2 border rounded bg-white/10 text-white">Camera Off</button>
-                    <button className="px-4 py-2 border rounded bg-white/10 text-white" onClick={switchToTabShare}>Share Screen</button>
-                    <button className="px-4 py-2 border rounded bg-white/10 text-white" onClick={switchBackToCamera}>Back To Camera</button>
-                    <button className="px-4 py-2 border rounded bg-white/10 text-white">Stop Share</button>
+                    <button
+                        onClick={toggleMute}
+                        className={`px-4 py-2 border rounded ${isMuted ? "bg-red-600 text-white" : "bg-white/10 text-white"
+                            }`}
+                    >
+                        {isMuted ? "Unmute" : "Mute"}
+                    </button>
+
+                    <button
+                        onClick={toggleCamera}
+                        className={`px-4 py-2 border rounded ${isCameraOff ? "bg-red-600 text-white" : "bg-white/10 text-white"
+                            }`}
+                    >
+                        {isCameraOff ? "Camera On" : "Camera Off"}
+                    </button>
+
+                    <button
+                        onClick={toggleScreenShare}
+                        className={`px-4 py-2 border rounded ${isScreenSharing
+                                ? "bg-red-600 text-white"
+                                : "bg-white/10 text-white"
+                            }`}
+                    >
+                        {isScreenSharing ? "Stop Sharing" : "Share Screen"}
+                    </button>
+
 
                     <button className="px-4 py-2 bg-blue-600 text-white rounded" onClick={handleCallUser}>Join</button>
                     <button className="px-4 py-2 bg-red-500 text-white rounded" onClick={handleLeaveCall}>Leave</button>

@@ -1,7 +1,8 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AutoCompleteInput from "./AutoCompleteInput";
 import groupContext from "../context/groups/groupContext";
 
+/* ---------------- TOPICS ---------------- */
 const topicOptions = [
     "JavaScript",
     "React",
@@ -15,17 +16,95 @@ const topicOptions = [
     "DBMS",
 ];
 
-const subtopicOptions = [
-    "Variables",
-    "Loops",
-    "Functions",
-    "Arrays",
-    "OOP",
-    "Promises",
-    "APIs",
-    "Hooks",
-    "Routing",
-];
+/* -------- TOPIC → SUBTOPIC MAPPING -------- */
+const topicSubtopicsMap: Record<string, string[]> = {
+    JavaScript: [
+        "Variables",
+        "Closures",
+        "Promises",
+        "Async / Await",
+        "Event Loop",
+        "ES6+",
+        "Arrays",
+        "Objects",
+    ],
+    React: [
+        "JSX",
+        "Components",
+        "Props",
+        "State",
+        "Hooks",
+        "Context API",
+        "React Router",
+        "Performance Optimization",
+    ],
+    "Node.js": [
+        "Event Loop",
+        "Express",
+        "Middleware",
+        "REST APIs",
+        "Authentication",
+        "File System",
+        "Streams",
+    ],
+    MongoDB: [
+        "CRUD Operations",
+        "Aggregation Pipeline",
+        "Indexes",
+        "Schema Design",
+        "Mongoose",
+        "Transactions",
+    ],
+    Python: [
+        "Syntax Basics",
+        "Functions",
+        "OOP",
+        "Virtual Environments",
+        "Libraries",
+        "File Handling",
+    ],
+    "Machine Learning": [
+        "Supervised Learning",
+        "Unsupervised Learning",
+        "Regression",
+        "Classification",
+        "Neural Networks",
+        "Model Evaluation",
+    ],
+    "Data Structures": [
+        "Arrays",
+        "Linked Lists",
+        "Stacks",
+        "Queues",
+        "Trees",
+        "Graphs",
+        "Hash Tables",
+    ],
+    "Operating Systems": [
+        "Processes",
+        "Threads",
+        "Scheduling",
+        "Deadlocks",
+        "Memory Management",
+        "File Systems",
+    ],
+    "Computer Networks": [
+        "OSI Model",
+        "TCP/IP",
+        "HTTP/HTTPS",
+        "DNS",
+        "Routing",
+        "Network Security",
+    ],
+    DBMS: [
+        "Normalization",
+        "Indexes",
+        "Joins",
+        "Transactions",
+        "ACID Properties",
+        "Query Optimization",
+    ],
+};
 
 const CreateGroupForm: React.FC = () => {
     const [topic, setTopic] = useState("");
@@ -34,8 +113,15 @@ const CreateGroupForm: React.FC = () => {
     const [time, setTime] = useState("");
     const [days, setDays] = useState("");
 
-    // ✅ Correct useContext usage
     const groupCtx = useContext(groupContext);
+
+    /* -------- RESET SUBTOPIC WHEN TOPIC CHANGES -------- */
+    useEffect(() => {
+        setSubtopic("");
+    }, [topic]);
+
+    /* -------- DYNAMIC SUBTOPICS -------- */
+    const subtopicOptions = topic ? topicSubtopicsMap[topic] || [] : [];
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -55,10 +141,11 @@ const CreateGroupForm: React.FC = () => {
             days,
         });
 
+        // Reset form
         setTopic("");
         setSubtopic("");
-        setTime("");
         setDescription("");
+        setTime("");
         setDays("");
     };
 
@@ -76,12 +163,13 @@ const CreateGroupForm: React.FC = () => {
                         setValue={setTopic}
                     />
 
-                    {/* Subtopic */}
+                    {/* Subtopic (dynamic) */}
                     <AutoCompleteInput
                         label="Subtopic"
                         options={subtopicOptions}
                         value={subtopic}
                         setValue={setSubtopic}
+                        disabled={!topic}
                     />
 
                     {/* Description */}
@@ -100,7 +188,9 @@ const CreateGroupForm: React.FC = () => {
 
                     {/* Time */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Time</label>
+                        <label className="block text-sm font-medium text-gray-700">
+                            Time
+                        </label>
                         <input
                             type="time"
                             value={time}

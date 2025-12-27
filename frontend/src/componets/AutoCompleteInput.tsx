@@ -5,6 +5,7 @@ interface AutoCompleteProps {
     options: string[];
     value: string;
     setValue: (val: string) => void;
+    disabled?: boolean;
 }
 
 const AutoCompleteInput: React.FC<AutoCompleteProps> = ({ label, options, value, setValue }) => {
