@@ -116,13 +116,13 @@ const ConversationGUI: React.FC = () => {
             return;
         }
         socket.on("user:joined", handleUserJoined);
-        socket.on("incomming:call", handleIncommingCall);
+        socket.on("incoming:call", handleIncommingCall);
         socket.on("call:accepted", handleCallAccepted);
         socket.on('peer:nego:needed', handleNegoNeedIncoming);
         socket.on('peer:nego:final', handleNegoNeedFinal);
         return () => {
             socket.off("user:joined", handleUserJoined);
-            socket.off("incomming:call", handleIncommingCall);
+            socket.off("incoming:call", handleIncommingCall);
             socket.off("call:accepted", handleCallAccepted);
             socket.off('peer:nego:needed', handleNegoNeedIncoming);
             socket.off('peer:nego:final', handleNegoNeedFinal);
@@ -244,11 +244,11 @@ const ConversationGUI: React.FC = () => {
 
                     <div className="absolute top-4 right-4 w-48 h-32 bg-gray-800 rounded shadow-lg flex items-center justify-center text-white border border-white/20">
                         <span className="absolute bottom-1 left-1 text-[10px] bg-black/50 px-1 py-px rounded">You</span>
-                        {remoteStream && (
+                        {myStream && (
                             <div>
                                 <video
                                     ref={(video) => {
-                                        if (video) video.srcObject = remoteStream;
+                                        if (video) video.srcObject = myStream;
                                     }}
                                     autoPlay
                                     muted
