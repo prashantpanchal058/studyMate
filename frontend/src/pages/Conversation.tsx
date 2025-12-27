@@ -37,7 +37,6 @@ const ConversationGUI: React.FC = () => {
         const offer = await peer.getOffer();
 
         if (!socket) {
-
             return
         }
 
@@ -245,11 +244,11 @@ const ConversationGUI: React.FC = () => {
 
                     <div className="absolute top-4 right-4 w-48 h-32 bg-gray-800 rounded shadow-lg flex items-center justify-center text-white border border-white/20">
                         <span className="absolute bottom-1 left-1 text-[10px] bg-black/50 px-1 py-px rounded">You</span>
-                        {myStream && (
+                        {remoteStream && (
                             <div>
                                 <video
                                     ref={(video) => {
-                                        if (video) video.srcObject = myStream;
+                                        if (video) video.srcObject = remoteStream;
                                     }}
                                     autoPlay
                                     muted

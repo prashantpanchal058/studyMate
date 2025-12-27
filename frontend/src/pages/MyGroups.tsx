@@ -115,8 +115,6 @@ const MyGroups: React.FC = () => {
     }, [groupstatusCtx]);
 
     const handleJoinRoom = useCallback((data: PassData) => {
-        // const { userId, friendId } = data;
-        // const path = userId + friendId;
         navigate(`/conversation/${data.id}`);
     }, [])
 

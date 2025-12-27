@@ -63,7 +63,7 @@ io.on("connection", (socket) => {
             roomId,
         });
 
-        socket.emit("room:join", { id: socket.id, roomId });
+        socket.emit("room:join", { id: socket.id });
     });
 
     socket.on("user:call", ({ to, offer }) => {
