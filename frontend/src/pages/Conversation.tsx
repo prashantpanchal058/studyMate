@@ -135,48 +135,6 @@ const ConversationGUI: React.FC = () => {
     }, [socket, handleIncommingCall, handleUserJoined, handleCallAccepted, handleNegoNeedIncoming,
         handleNegoNeedFinal])
 
-    const switchToTabShare = async () => {
-        const tabStream = await navigator.mediaDevices.getDisplayMedia({
-            video: { displaySurface: "browser" },
-            audio: true
-        });
-
-        const videoTrack = tabStream.getVideoTracks()[0];
-
-        const sender = peer.peer.getSenders().find(
-            s => s.track && s.track.kind === "video"
-        );
-
-        if (sender) {
-            sender.replaceTrack(videoTrack);
-        }
-
-        setMyStream(tabStream);
-    };
-
-    const switchBackToCamera = async () => {
-        const camStream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: true
-        });
-
-        const camTrack = camStream.getVideoTracks()[0];
-
-        const sender = peer.peer.getSenders().find(
-            s => s.track && s.track.kind === "video"
-        );
-
-        if (sender) {
-            await sender.replaceTrack(camTrack);
-        }
-
-        setMyStream(camStream);
-
-        // 🔥 renegotiate after switching track
-        const offer = await peer.getOffer();
-        socket?.emit("peer:nego:needed", { to: remoteSocketId, offer });
-    };
-
     const toggleMute = useCallback(() => {
         if (!myStream) return;
 
