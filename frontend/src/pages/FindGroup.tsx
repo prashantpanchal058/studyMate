@@ -3,6 +3,7 @@ import { Search, Clock, MessageSquare } from "lucide-react";
 import groupContext from "../context/groups/groupContext";
 import groupStatusContext from "../context/groupStatus/groupStatusContext";
 import AutoCompleteInput from "../componets/AutoCompleteInput";
+import { useNavigate } from "react-router-dom";
 
 const FindGroup: React.FC = () => {
     const groupCtx = useContext(groupContext);
@@ -15,6 +16,16 @@ const FindGroup: React.FC = () => {
     const [timeFilter, setTimeFilter] = useState("Any");
 
     const [groups, setGroups] = useState<any[]>([]);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/login");
+        }
+    }, [navigate]);
 
     const getTimeSlot = (time: string) => {
         const [hour] = time.split(":").map(Number);

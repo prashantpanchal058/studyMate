@@ -2,15 +2,19 @@ import { MessageSquare, Clock, Trash } from "lucide-react";
 import CreateGroupForm from "../componets/CreateGroupForm";
 import groupContext from "../context/groups/groupContext";
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CreateGroups: React.FC = () => {
     const groupCtx = useContext(groupContext);
     const [groupc, setGroups] = useState<any[]>([]);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         if (!groupCtx) return;
 
         if(!localStorage.getItem('token')){
+            navigate("/login");
             return;
         }
 

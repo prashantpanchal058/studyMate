@@ -18,6 +18,14 @@ const MyGroups: React.FC = () => {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/login");
+        }
+    }, [navigate]);
+
     const acceptRequest = async (id: string) => {
         if (!groupstatusCtx) return;
 
