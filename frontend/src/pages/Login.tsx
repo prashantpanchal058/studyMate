@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
@@ -7,6 +7,14 @@ const Login: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (token) {
+            navigate("/login");
+        }
+    }, [navigate]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

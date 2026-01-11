@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface UserData {
@@ -20,6 +20,14 @@ const Signup: React.FC = () => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -45,7 +53,7 @@ const Signup: React.FC = () => {
 
       const json = await response.json()
 
-      if(json.success){
+      if (json.success) {
         localStorage.setItem('token', json.authToken);
         navigate("/");
       }
