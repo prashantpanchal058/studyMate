@@ -150,7 +150,7 @@ const CreateGroupForm: React.FC = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="flex min-h-screen bg-gray-100">
             <div className="w-full max-w-lg bg-white p-6 rounded-xl shadow-md">
                 <h2 className="text-xl font-bold mb-4">Create New Study Group</h2>
 
