@@ -43,7 +43,7 @@ const CreateGroups: React.FC = () => {
 
     return (
         <section className="bg-gray-100 md:h-screen md:overflow-hidden">
-            <div className="h-[90%] mx-auto px-4 py-6">
+            <div className="h-full mx-auto px-4 py-6">
 
                 {/* MAIN WRAPPER */}
                 <div className="h-full flex flex-col md:flex-row gap-20 mx-10">
