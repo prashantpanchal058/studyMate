@@ -42,11 +42,11 @@ const CreateGroups: React.FC = () => {
     };
 
     return (
-        <section className="h-screen overflow-hidden text-gray-700 body-font">
+        <section className="bg-gray-100 md:h-screen md:overflow-hidden">
             <div className="h-full container mx-auto px-4 py-6">
 
                 {/* MAIN WRAPPER */}
-                <div className="h-full flex flex-col md:flex-row gap-6">
+                <div className="h-full flex flex-col md:flex-row gap-20 mx-10">
 
                     {/* LEFT — FORM (NO SCROLL) */}
                     <div className="md:w-1/2 w-full bg-white rounded-xl shadow p-6">
