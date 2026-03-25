@@ -11,30 +11,28 @@ import Settings from './pages/Settings';
 import MainLayout from './layouts/MainLayout';
 import CreateGroups from './pages/CreateGroup';
 import Conversation from './pages/Conversation';
-import { SocketProvider } from './context/SocketProvider';
+import CreateGroupForm from './componets/CreateGroupForm';
 
 function App() {
 
   return (
-    <SocketProvider>
-      <Routes>
+    <Routes>
 
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-
-        {/* Protected layout */}
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<DashBoard />} />
-          <Route path="/find-group" element={<FindGroup />} />
-          <Route path="/my_groups" element={<MyGroups />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/setting" element={<Settings />} />
-          <Route path="/createGroups" element={<CreateGroups />} />
-        </Route>
-        <Route path="/conversation/:id" element={<Conversation />} />
-      </Routes>
-    </SocketProvider>
+      {/* Protected layout */}
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<DashBoard />} />
+        <Route path="/find-group" element={<FindGroup />} />
+        <Route path="/my_groups" element={<MyGroups />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/setting" element={<Settings />} />
+        <Route path="/createGroups" element={<CreateGroups />} />
+        <Route path="/createGroupForm" element={<CreateGroupForm />} />
+      </Route>
+      <Route path="/conversation/:id" element={<Conversation />} />
+    </Routes>
 
   )
 }

@@ -18,10 +18,11 @@ const PORT = process.env.PORT || 8007;
 // ------------------- MIDDLEWARE -------------------
 app.use(
     cors({
-        origin: process.env.FRONTEND_URL, // IMPORTANT
+        origin: process.env.FRONTEND_URL || "https://studymate-p7sk.onrender.com", // IMPORTANT
         credentials: true,
     })
 );
+// app.use(cors());
 app.use(express.json());
 
 // ------------------- ROUTES -------------------

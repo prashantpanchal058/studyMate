@@ -2,6 +2,7 @@
 import { useSocket } from "../context/SocketProvider";
 import { useCallback, useEffect, useState } from "react";
 import peer from "../service/peer";
+import { useNavigate } from "react-router-dom"
 
 interface PassData {
     id: string,
@@ -26,8 +27,8 @@ const ConversationGUI: React.FC = () => {
     const [isMuted, setIsMuted] = useState(false);
     const [isCameraOff, setIsCameraOff] = useState(false);
     const [isScreenSharing, setIsScreenSharing] = useState(false);
-
-
+    
+    const navigate = useNavigate();
 
     const handleUserJoined = useCallback((data: PassData) => {
         setRemoteSocketId(data.id);
@@ -178,6 +179,7 @@ const ConversationGUI: React.FC = () => {
 
         // 6. Notify other user (optional but correct)
         socket?.emit("call:leave", { to: remoteSocketId });
+        navigate("/my_groups");
     }, [myStream, remoteSocketId, socket]);
 
     const toggleScreenShare = useCallback(async () => {
@@ -250,30 +252,6 @@ const ConversationGUI: React.FC = () => {
 
     return (
         <div className="h-screen w-full bg-gray-100 p-0 m-0 overflow-hidden flex">
-            <div className="w-80 bg-white h-full p-5 shadow-lg flex flex-col gap-6 border-r">
-                <div className="flex flex-col flex-1">
-                    <h2 className="text-lg font-semibold mb-3">Chat</h2>
-                    <div className="flex-1 overflow-y-auto border rounded p-3 bg-gray-50 space-y-3 text-sm">
-                        <div className="text-gray-400">No messages yet</div>
-
-                        <div className="text-right">
-                            <div className="text-xs text-gray-400 mb-1">You • 12:30</div>
-                            <div className="inline-block px-3 py-2 bg-blue-600 text-white rounded">Hello!</div>
-                        </div>
-
-                        <div className="text-left">
-                            <div className="text-xs text-gray-400 mb-1">Other • 12:31</div>
-                            <div className="inline-block px-3 py-2 border rounded bg-white">Hi there!</div>
-                        </div>
-                    </div>
-
-                    <div className="mt-3 flex gap-2">
-                        <input className="flex-1 px-3 py-2 border rounded" placeholder="Message..." />
-                        <button className="px-4 py-2 bg-blue-600 text-white rounded">Send</button>
-                    </div>
-                </div>
-            </div>
-
             <div className="flex-1 bg-black h-full flex flex-col p-4 gap-4">
                 <h2 className="text-lg font-semibold text-white">Video Call</h2>
 

@@ -1,23 +1,10 @@
-import { useEffect, useState } from "react";
-import { Menu, X, User } from "lucide-react";
+import { useState } from "react";
+import { Menu, X, User} from "lucide-react";
 import { useNavigate } from "react-router-dom"
 
 const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [isLogin, setLogin] = useState(true);
-
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-
-        if (token) {
-            setLogin(true);   // user logged in
-        } else {
-            setLogin(false);  // user not logged in
-        }
-    }, []);
-
 
     return (
         <header className="text-gray-600 body-font shadow-sm fixed top-0 left-0 w-full z-50 bg-white">
@@ -29,8 +16,8 @@ const Navbar: React.FC = () => {
                         href="/"
                         className="flex title-font font-medium items-center text-gray-900"
                     >
-                        <img src="logo.svg" alt="Study Group Finder" className="w-9 h-9" />
-                        <span className="ml-2 text-xl font-semibold">StudyMate</span>
+                        <img src="logo.svg" alt="Study Group Finder" className="w-11 h-11 ms-3 mt-1" />
+                        <span className="ms-4 text-2xl font-semibold">StudyMate</span>
                     </a>
 
                     {/* Links (visible on desktop) */}
@@ -54,90 +41,61 @@ const Navbar: React.FC = () => {
                 <div className="flex items-center justify-end ml-auto md:mr-0">
                     {/* Desktop Buttons */}
                     <div className="hidden md:flex items-center gap-3">
+
                         <div onClick={() => { navigate("/profile") }} className="flex flex-col pe-3 items-center cursor-pointer">
                             <button className="rounded-full hover:bg-gray-100 p-1.5">
                                 <User className="w-6 h-6 text-gray-700" />
                             </button>
                             <span className="text-xs mt-0.5">Profile</span>
                         </div>
-
-                        {!isLogin ? (
-                            <div className="flex gap-2">
-                                <button onClick={() => navigate("/login")} className="px-3 py-1.5 bg-indigo-500 text-white rounded hover:bg-indigo-600 text-sm">
-                                    Sign In
-                                </button>
-                                <button onClick={() => navigate("/Signup")} className="px-3 py-1.5 bg-indigo-500 text-white rounded hover:bg-indigo-600 text-sm">
-                                    Sign Up
-                                </button>
-                            </div>
-                        ) :
-                            <div className="flex gap-2">
-                                <button onClick={() => {
-                                    localStorage.removeItem('token');
-                                    setLogin(false);
-                                }} className="px-3 py-1.5 bg-indigo-500 text-white rounded hover:bg-indigo-600 text-sm">
-                                    Sign out
-                                </button>
-                            </div>
-                        }
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <button
-                        onClick={() => setIsOpen(!isOpen)}
-                        className="md:hidden inline-flex items-center bg-gray-100 border-0 p-2 rounded text-gray-600 hover:bg-gray-200 focus:outline-none ml-2"
-                    >
-                        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                    </button>
+                    {/* Mobile Right Icons */}
+                    <div className="flex items-center gap-2 md:hidden ml-2">
+
+                        {/* Profile */}
+                        <button
+                            onClick={() => navigate("/profile")}
+                            className="p-2 rounded-full hover:bg-gray-100"
+                        // className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                            <User className="w-5 h-5 text-gray-700" />
+                        </button>
+
+                        {/* Menu Button */}
+                        <button
+                            onClick={() => setIsOpen(!isOpen)}
+                            className="inline-flex items-center bg-gray-100 dark:bg-gray-800 border-0 p-2 rounded text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
+                        >
+                            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                        </button>
+                    </div>
                 </div>
             </div>
 
             {/* Mobile Dropdown Menu */}
             {isOpen && (
-                <nav className="md:hidden flex flex-col items-start space-y-3 px-5 pb-4 bg-gray-50">
-                    <a href="/" className="text-black hover:text-gray-800">
-                        Home
-                    </a>
-                    <a href="/find-group" className="text-black hover:text-gray-800">
-                        Find Group
-                    </a>
-                    <a href="/my_groups" className="text-black hover:text-gray-800">
-                        My Groups
-                    </a>
-                    <a href="/createGroups" className="text-black hover:text-gray-800">
-                        create groups
-                    </a>
-                    <a href="profile" className="text-black hover:text-gray-800">
-                        Profile
-                    </a>
+                <nav className="md:hidden flex flex-col px-5 py-4 bg-white dark:bg-gray-900 shadow-md rounded-b-2xl space-y-4">
 
-                    {isLogin ? (
-                        <button
-                            onClick={() => {
-                                localStorage.removeItem("token");
-                                setLogin(false);
-                            }}
-                            className="w-24 bg-indigo-500 text-white py-1.5 rounded hover:bg-indigo-900 text-sm"
-                        >
-                            Sign Out
-                        </button>
-                    ) : (
-                        <div className="flex flex-col gap-2 w-full mt-2">
-                            <button
-                                onClick={() => navigate("/login")}
-                                className="w-24 bg-indigo-500 text-white py-1.5 rounded hover:bg-indigo-900 text-sm"
-                            >
-                                Sign In
-                            </button>
-                            <button
-                                onClick={() => navigate("/signup")}
-                                className="w-24 bg-indigo-500 text-white py-1.5 rounded hover:bg-indigo-900 text-sm"
-                            >
-                                Sign Up
-                            </button>
-                        </div>
-                    )}
+                    {/* Links */}
+                    <div className="flex flex-col space-y-3 text-sm font-medium">
+                        <a href="/" className="px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                            Home
+                        </a>
+                        <a href="/find-group" className="px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                            Find Group
+                        </a>
+                        <a href="/my_groups" className="px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                            My Groups
+                        </a>
+                        <a href="/createGroups" className="px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                            Create Groups
+                        </a>
+                    </div>
 
+                    {/* Divider */}
+                    <div className="border-t border-gray-200 dark:border-gray-700"></div>
                 </nav>
             )}
         </header>

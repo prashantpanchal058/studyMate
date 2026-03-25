@@ -21,6 +21,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     const socket = useMemo(
         () =>
             io("https://studymate-p7sk.onrender.com", {
+            // io("http://localhost:8007", {
                 withCredentials: true,
                 transports: ["polling","websocket"], // ✅ Render-safe
             }),

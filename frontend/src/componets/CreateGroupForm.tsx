@@ -1,110 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import AutoCompleteInput from "./AutoCompleteInput";
 import groupContext from "../context/groups/groupContext";
-
-/* ---------------- TOPICS ---------------- */
-const topicOptions = [
-    "JavaScript",
-    "React",
-    "Node.js",
-    "MongoDB",
-    "Python",
-    "Machine Learning",
-    "Data Structures",
-    "Operating Systems",
-    "Computer Networks",
-    "DBMS",
-];
-
-/* -------- TOPIC → SUBTOPIC MAPPING -------- */
-const topicSubtopicsMap: Record<string, string[]> = {
-    JavaScript: [
-        "Variables",
-        "Closures",
-        "Promises",
-        "Async / Await",
-        "Event Loop",
-        "ES6+",
-        "Arrays",
-        "Objects",
-    ],
-    React: [
-        "JSX",
-        "Components",
-        "Props",
-        "State",
-        "Hooks",
-        "Context API",
-        "React Router",
-        "Performance Optimization",
-    ],
-    "Node.js": [
-        "Event Loop",
-        "Express",
-        "Middleware",
-        "REST APIs",
-        "Authentication",
-        "File System",
-        "Streams",
-    ],
-    MongoDB: [
-        "CRUD Operations",
-        "Aggregation Pipeline",
-        "Indexes",
-        "Schema Design",
-        "Mongoose",
-        "Transactions",
-    ],
-    Python: [
-        "Syntax Basics",
-        "Functions",
-        "OOP",
-        "Virtual Environments",
-        "Libraries",
-        "File Handling",
-    ],
-    "Machine Learning": [
-        "Supervised Learning",
-        "Unsupervised Learning",
-        "Regression",
-        "Classification",
-        "Neural Networks",
-        "Model Evaluation",
-    ],
-    "Data Structures": [
-        "Arrays",
-        "Linked Lists",
-        "Stacks",
-        "Queues",
-        "Trees",
-        "Graphs",
-        "Hash Tables",
-    ],
-    "Operating Systems": [
-        "Processes",
-        "Threads",
-        "Scheduling",
-        "Deadlocks",
-        "Memory Management",
-        "File Systems",
-    ],
-    "Computer Networks": [
-        "OSI Model",
-        "TCP/IP",
-        "HTTP/HTTPS",
-        "DNS",
-        "Routing",
-        "Network Security",
-    ],
-    DBMS: [
-        "Normalization",
-        "Indexes",
-        "Joins",
-        "Transactions",
-        "ACID Properties",
-        "Query Optimization",
-    ],
-};
+import { useNavigate } from "react-router-dom";
+import { topicSubtopicsMap, topicOptions } from "./Data";
 
 const CreateGroupForm: React.FC = () => {
     const [topic, setTopic] = useState("");
@@ -112,50 +10,89 @@ const CreateGroupForm: React.FC = () => {
     const [desc, setDescription] = useState("");
     const [time, setTime] = useState("");
     const [days, setDays] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
+    const navigate = useNavigate();
     const groupCtx = useContext(groupContext);
 
-    /* -------- RESET SUBTOPIC WHEN TOPIC CHANGES -------- */
     useEffect(() => {
         setSubtopic("");
     }, [topic]);
 
-    /* -------- DYNAMIC SUBTOPICS -------- */
     const subtopicOptions = topic ? topicSubtopicsMap[topic] || [] : [];
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError("");
+
+        // 🔴 Validation
+        if (!topic) return setError("Please select a topic.");
+        if (!subtopic) return setError("Please select a subtopic.");
+        if (!desc.trim()) return setError("Description cannot be empty.");
+        if (!time) return setError("Please select time.");
+        if (!days || Number(days) <= 0) return setError("Enter valid number of days.");
 
         if (!groupCtx) {
-            console.error("groupContext is NULL.");
+            setError("Something went wrong. Try again.");
             return;
         }
 
-        const { createGroup } = groupCtx;
+        try {
+            setLoading(true);
+            const { createGroup } = groupCtx;
 
-        await createGroup({
-            topic,
-            subtopic,
-            desc,
-            time,
-            days,
-        });
+            const json = await createGroup({
+                topic,
+                subtopic,
+                desc,
+                time,
+                days,
+            });
 
-        // Reset form
-        setTopic("");
-        setSubtopic("");
-        setDescription("");
-        setTime("");
-        setDays("");
+            if (json.error) setError(json.error)
+
+            if (json.success) {
+                setTopic("");
+                setSubtopic("");
+                setDescription("");
+                setTime("");
+                setDays("");
+                navigate("/createGroups");
+            }
+
+        } catch (err) {
+            console.error(err);
+            setError("Failed to create group. Try again later.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div className="flex items-center justify-center">
-            <div className="w-full max-w-lg bg-white p-6 rounded-xl shadow-md">
-                <h2 className="text-xl font-bold mb-4">Create New Study Group</h2>
+        <div className="min-h-[calc(100vh-72px)] flex items-center justify-center bg-linear-to-br from-indigo-100 via-white to-purple-100 px-4">
+            <div className="relative w-full max-w-lg backdrop-blur-lg bg-white/80 border border-gray-200 shadow-xl rounded-2xl p-8">
 
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    {/* Topic */}
+                <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+                    🚀 Create Study Group
+                </h2>
+
+                <button
+                    onClick={() => navigate("/createGroups")}
+                    className="absolute top-2 right-3 text-gray-500 hover:text-gray-700 text-xl"
+                >
+                    ✕
+                </button>
+
+                {/* 🔴 Error Box */}
+                {error && (
+                    <div className="bg-red-100 text-red-600 text-sm p-3 rounded-lg mb-4">
+                        <p>{error}</p>
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+
                     <AutoCompleteInput
                         label="Topic"
                         options={topicOptions}
@@ -163,7 +100,6 @@ const CreateGroupForm: React.FC = () => {
                         setValue={setTopic}
                     />
 
-                    {/* Subtopic (dynamic) */}
                     <AutoCompleteInput
                         label="Subtopic"
                         options={subtopicOptions}
@@ -172,52 +108,47 @@ const CreateGroupForm: React.FC = () => {
                         disabled={!topic}
                     />
 
-                    {/* Description */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">
                             Description
                         </label>
                         <textarea
                             value={desc}
                             onChange={(e) => setDescription(e.target.value)}
                             rows={3}
-                            className="w-full rounded-lg border border-gray-300 p-2"
-                            placeholder="Describe your study group"
+                            className="w-full rounded-xl border border-gray-300 p-3 focus:ring-2 focus:ring-indigo-400 outline-none"
                         />
                     </div>
 
-                    {/* Time */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                            Time
-                        </label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
                         <input
                             type="time"
                             value={time}
                             onChange={(e) => setTime(e.target.value)}
-                            className="w-full rounded-lg border p-2 border-gray-300"
+                            className="w-full rounded-xl border p-3"
                         />
-                    </div>
 
-                    {/* Days */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                            Days to finish topic
-                        </label>
                         <input
                             type="number"
                             min={1}
                             value={days}
                             onChange={(e) => setDays(e.target.value)}
-                            className="w-full rounded-lg border p-2 border-gray-300"
+                            placeholder="Days"
+                            className="w-full rounded-xl border p-3"
                         />
                     </div>
 
+                    {/* Button with loading */}
                     <button
                         type="submit"
-                        className="w-full bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600"
+                        disabled={loading}
+                        className={`w-full py-3 rounded-xl font-semibold text-white transition ${loading
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-linear-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600"
+                            }`}
                     >
-                        Create Group
+                        {loading ? "Creating..." : "Create Group"}
                     </button>
                 </form>
             </div>

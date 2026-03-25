@@ -18,7 +18,7 @@ export const signup = async (req: Request, res: Response): Promise<Response> => 
     // Validate incoming request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ success, errors: errors.array() });
+        return res.status(400).json({ success, error: errors.array()[0].msg });
     }
 
     try {
@@ -69,7 +69,7 @@ export const signin = async (req: Request, res: Response): Promise<Response> => 
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ success, errors: errors.array() });
+        return res.status(400).json({ success, error: errors.array()[0].msg });
     }
 
     try {

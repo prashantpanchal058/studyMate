@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const mongoURI = "mongodb+srv://prashantpanchal058_db_user:pWKSsslkwtew2XVL@cluster0.vzkusa2.mongodb.net/?appName=Cluster0/studymate";
+// const mongoURI = "mongodb://127.0.0.1:27017/studyFinder";
 
 const connectToMongo = async()=>{
     await mongoose.connect(mongoURI)

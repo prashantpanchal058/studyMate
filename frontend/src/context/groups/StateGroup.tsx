@@ -7,6 +7,7 @@ interface GroupProviderProps {
 }
 
 const StateGroup: React.FC<GroupProviderProps> = ({ children }) => {
+    // const host = "http://localhost:8007/group";
     const host = "https://studymate-p7sk.onrender.com/group";
     const [groups, setGroups] = useState<Group[]>([]);
 

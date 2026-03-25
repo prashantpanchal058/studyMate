@@ -14,7 +14,7 @@ const signup = async (req, res) => {
     // Validate incoming request
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ success, errors: errors.array() });
+        return res.status(400).json({ success, error: errors.array()[0].msg });
     }
     try {
         const { name, email, password } = req.body;
@@ -55,7 +55,7 @@ const signin = async (req, res) => {
     let success = false;
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ success, errors: errors.array() });
+        return res.status(400).json({ success, error: errors.array()[0].msg });
     }
     try {
         let user = await User_1.default.findOne({ email: req.body.email });

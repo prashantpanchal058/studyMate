@@ -18,9 +18,10 @@ const app = (0, express_1.default)();
 const PORT = process.env.PORT || 8007;
 // ------------------- MIDDLEWARE -------------------
 app.use((0, cors_1.default)({
-    origin: process.env.FRONTEND_URL, // IMPORTANT
+    origin: process.env.FRONTEND_URL || "https://studymate-p7sk.onrender.com", // IMPORTANT
     credentials: true,
 }));
+// app.use(cors());
 app.use(express_1.default.json());
 // ------------------- ROUTES -------------------
 app.use("/", auth_1.default);
@@ -51,7 +52,7 @@ io.on("connection", (socket) => {
             id: socket.id,
             roomId,
         });
-        socket.emit("room:join", { id: socket.id, roomId });
+        socket.emit("room:join", { id: socket.id });
     });
     socket.on("user:call", ({ to, offer }) => {
         io.to(to).emit("incoming:call", { from: socket.id, offer });

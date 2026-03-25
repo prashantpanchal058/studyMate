@@ -10,7 +10,7 @@ const createGroup = async (req, res) => {
     try {
         const errors = (0, express_validator_1.validationResult)(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+            return res.status(400).json({ error: errors.array()[0].msg });
         }
         const { topic, subtopic, desc, time, days } = req.body;
         if (!topic || !subtopic || !desc || !time || !days) {
@@ -36,7 +36,7 @@ const createGroup = async (req, res) => {
             userId,
         });
         await group.save();
-        return res.status(201).json({ msg: "Group created successfully", group });
+        return res.status(201).json({ success: "Group created successfully", group });
     }
     catch (error) {
         console.error("Create Group Error:", error.message);
